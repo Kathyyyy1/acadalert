@@ -2416,6 +2416,20 @@ footer {
     background-color: #ffffff;
 }
 
+/* The school-year select must show its whole "YYYY-YYYY" label. Bootstrap's
+   .form-select is width: 100%, so the title row's flex layout was free to shrink
+   it below the width its own option text needs and clip the final character
+   ("2024-2025" painted as "2024-202"). Size it to its own content instead of
+   stretching, pin a comfortable minimum width so it can never shrink again, and
+   restore the padding-right the chevron needs so the number stays clear of the
+   arrow. */
+.container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4 .ah-year-select {
+    width: auto;
+    min-width: 9rem;
+    flex: 0 0 auto;
+    padding-right: 2.25rem;
+}
+
 .container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4 .btn-outline-secondary,
 .container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4 .btn-outline-primary {
     color: var(--ocean-soft);

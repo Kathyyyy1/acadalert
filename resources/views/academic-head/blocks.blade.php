@@ -104,7 +104,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-2 small text-{{ $meta->tone }}">
-                                        <i class="fas fa-percentage me-1"></i>{{ number_format($meta->highPercent, 1) }}% high risk
+                                        {{ number_format($meta->highPercent, 1) }}% high risk
                                     </div>
                                     <a href="{{ route('academic-head.block', ['blockId' => $block->id, 'period' => $currentPeriod, 'school_year' => $schoolYear]) }}"
                                        class="btn btn-sm btn-outline-primary w-100 mt-3">
@@ -162,7 +162,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-2 small text-{{ $meta->tone }}">
-                                    <i class="fas fa-percentage me-1"></i>{{ number_format($meta->highPercent, 1) }}% high risk
+                                    {{ number_format($meta->highPercent, 1) }}% high risk
                                 </div>
                                 <a href="{{ route('academic-head.block', ['blockId' => $block->id, 'period' => $currentPeriod, 'school_year' => $schoolYear]) }}"
                                    class="btn btn-sm btn-outline-primary w-100 mt-3">

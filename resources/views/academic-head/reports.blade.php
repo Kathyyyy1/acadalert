@@ -101,7 +101,7 @@
             </div>
             <div class="col-md-6 text-md-end">
                 <span class="text-muted small">
-                    Academic year is graded on three periods: {{ implode(' &middot; ', $periods) }}.
+                    Academic year is graded on three periods: {{ implode(' · ', $periods) }}.
                 </span>
             </div>
         </form>

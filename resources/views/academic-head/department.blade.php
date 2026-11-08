@@ -16,7 +16,7 @@
                     <option value="{{ $p }}" @selected($currentPeriod === $p)>{{ $p }}</option>
                 @endforeach
             </select>
-            <select class="form-select form-select-sm" name="school_year" onchange="this.form.submit()" aria-label="School year">
+            <select class="form-select form-select-sm ah-year-select" name="school_year" onchange="this.form.submit()" aria-label="School year">
                 @foreach($schoolYears as $year)
                     <option value="{{ $year }}" @selected($schoolYear === $year)>{{ $year }}</option>
                 @endforeach

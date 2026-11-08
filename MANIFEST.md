@@ -3110,3 +3110,120 @@ touched at all.
 Delete `resetScoringRetry()`, its two call sites and the two state variables, and restore the bare
 `setTimeout(() => { ... }, 3000);` in the `catch`. No schema, route, model, controller or scoring
 change is involved.
+
+## Refactor 28: Academic Head — Department Overview title-bar school-year select no longer clips "2024-2025" (design only, complete)
+
+**Report:** the school-year selector in the top-right of the Department Overview header renders
+`2024-202` instead of `2024-2025`; the last digit is cut off.
+
+### 1. Root cause
+
+The control is a Bootstrap `.form-select`, which carries `width: 100%`. In the title bar it shares a
+single `d-flex` row with the period select (`@section('page_actions')` → the layout's
+`.d-flex.mt-3.mb-4` band, which sets `overflow: hidden`). Both selects therefore use the form's width
+as their flex basis and split it by equal `flex-shrink`, so the narrower "Midterm" fits while the
+wider "2024-2025" is starved by ~6px and its final character is clipped.
+
+### 2. The fix (visual only — one class, one rule)
+
+| File | Change |
+|------|--------|
+| `resources/views/academic-head/department.blade.php:19` | the `school_year` `<select>` gains one class token, `ah-year-select`. No `name`, `onchange`, `aria-label`, option loop or selected-state logic is touched. |
+| `public/css/app.css` (immediately after the `.form-select > option` rule) | new scoped rule — `width: auto` (size to its own content instead of stretching), `min-width: 9rem`, `flex: 0 0 auto` (never shrink), `padding-right: 2.25rem` (chevron gutter so the number is clear of the arrow). |
+
+Nothing else changed: no controller, route, model, migration, seeder or fetch logic is involved. The
+`$schoolYears` list is still rendered byte-for-byte as before (`availableSchoolYears()` untouched).
+
+### 3. Verification
+
+Rendered the real `app.css` + `bootstrap.min.css` against the exact header markup in headless Chrome
+at 1366px, with a JS probe measuring the select box against the width the "2024-2025" glyphs need:
+
+| Case | selectWidth | text width | width needed | fits |
+|------|------------:|-----------:|-------------:|------|
+| Before (no class) | 93.5px | 67.9px | 99.9px | **false** → `2024-202` |
+| After (`.ah-year-select`) | 144.0px | 67.9px | 119.9px | **true** → `2024-2025` |
+
+The screenshot of that render shows `2024-202` before and the full `2024-2025` after, clear of the
+chevron. `php artisan view:clear` + `view:cache` recompiles the `academic-head/department` view
+cleanly, and `app.css` brace counts stay balanced (678/678).
+
+### 4. Rollback
+
+Remove the `ah-year-select` class token from the view and delete the single CSS rule. No
+schema/route/model/controller change is involved.
+
+## Refactor 29: Academic Head — End-of-Term Reports header printed literal "&middot;" (design only, complete)
+
+**Report:** the reports header read `Academic year is graded on three periods: Prelim &middot; Midterm
+&middot; Finals.` — the HTML entity appeared as literal text instead of the middle dot "·".
+
+### 1. Root cause
+
+`resources/views/academic-head/reports.blade.php:104` built the separator **inside** the escaped
+`{{ }}` expression — `{{ implode(' &middot; ', $periods) }}`. Blade compiles that to
+`e(implode(...))`, and `e()` is `htmlspecialchars`, which turns the `&` of the entity into `&amp;`.
+The browser then renders `&amp;middot;` as the literal string `&middot;`.
+
+### 2. The fix (one character)
+
+The separator is now the real middle dot, `' · '` (U+00B7), kept inside `{{ }}` so the `$periods`
+values stay HTML-escaped:
+
+`{{ implode(' · ', $periods) }}`
+
+No other markup, class, route, controller, service or database change is involved. (`$periods` is
+`EndOfTermReportService::PERIODS = ['Prelim', 'Midterm', 'Finals']`.)
+
+### 3. Verification
+
+| Check | Result |
+|-------|--------|
+| `php artisan view:clear` + `view:cache` | `academic-head/reports` compiles clean; compiled line is `e(implode(' · ', $periods))` |
+| UTF-8 check | source holds exactly one `C2 B7` (·) byte-pair; file is UTF-8 (no BOM) |
+| Escaping probe (`htmlspecialchars`) | old `&middot;` → `&amp;middot;` (literal bug); new `·` → `C2 B7` untouched, no `&` |
+| Rendered text | `Academic year is graded on three periods: Prelim · Midterm · Finals.` |
+
+### 4. Rollback
+
+Change `' · '` back to `' &middot; '`. No schema/route/model/controller change is involved.
+
+## Refactor 30: Academic Head — Blocks page block cards showed the percent indicator twice (design only, complete)
+
+**Report:** on each block card the red line beneath the risk breakdown rendered the percentage twice —
+a Font Awesome percent icon **plus** a literal `%` after the number (e.g. `% 25.0% high risk`).
+
+### 1. Root cause
+
+`resources/views/academic-head/blocks.blade.php` printed both a decorative icon and a literal sign on
+the same line, in **both** card branches (the department-wide grouped grid and the per-program grid):
+
+`<i class="fas fa-percentage me-1"></i>{{ number_format($meta->highPercent, 1) }}% high risk`
+
+The `<i class="fas fa-percentage">` glyph is itself a "%" symbol, so it doubled the sign next to the
+`%` that follows the number.
+
+### 2. The fix (icon removed, sign kept)
+
+Dropped the redundant `<i class="fas fa-percentage me-1"></i>` from both lines so each card now reads
+exactly `25.0% high risk` — one sign, one meaning:
+
+`{{ number_format($meta->highPercent, 1) }}% high risk`
+
+Nothing else changed: the surrounding `<div class="mt-2 small text-{{ $meta->tone }}">` wrapper, the
+tone colouring, `$meta->highPercent`, the risk badges above it, the "View Block" link and every other
+card element are byte-identical. No controller, route, model, service or database code is touched.
+
+### 3. Verification
+
+| Check | Result |
+|-------|--------|
+| `fa-percentage` in `blocks.blade.php` | **0** (was 2 — one per card branch) |
+| Both card branches | now read `{{ number_format($meta->highPercent, 1) }}% high risk` |
+| `php artisan view:clear` + `view:cache` | compiles clean; compiled Blocks view holds **0** `fa-percentage` and two clean `… ?>% high risk` lines |
+| Remaining `fa-percentage` in repo | only `payments.blade.php` and `partials/scoring-cards.blade.php` — pre-existing icon-only stat cards, untouched |
+
+### 4. Rollback
+
+Re-insert `<i class="fas fa-percentage me-1"></i>` before the `{{ number_format($meta->highPercent, 1) }}`
+on the two lines. No schema/route/model/controller change is involved.
