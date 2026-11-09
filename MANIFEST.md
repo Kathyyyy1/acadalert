@@ -3227,3 +3227,59 @@ card element are byte-identical. No controller, route, model, service or databas
 
 Re-insert `<i class="fas fa-percentage me-1"></i>` before the `{{ number_format($meta->highPercent, 1) }}`
 on the two lines. No schema/route/model/controller change is involved.
+
+## Refactor 31: Academic Head — Risk Scoring title-bar school-year select no longer clips "2024-2025" (design only, complete)
+
+**Report:** the same symptom as Refactor 28, on a different page — the school-year selector in the
+top-right of the **Risk Scoring** header renders `2024-202` instead of `2024-2025`.
+
+### 1. Root cause
+
+Identical to Refactor 28: the control is a Bootstrap `.form-select` (`width: 100%`) sharing the title
+bar's `d-flex` row, so the flex algorithm was free to size it below the width its own option text needs.
+The Risk Scoring row is the tightest Academic Head title bar — badge, period select, school-year select,
+"Run All Blocks" and "Refresh" on one line — so the year label lost its last digit there too.
+
+Measured on the real blade in headless Chrome at 1366px: the select was **101.5px** wide while the
+"2024-2025" glyphs plus box padding/borders need **111.1px** → the final "5" was clipped.
+
+### 2. The fix (visual only — two class tokens, two rules)
+
+| File | Change |
+|------|--------|
+| `resources/views/academic-head/risk-scoring.blade.php:19` | the `school_year` `<select>` gains the very same `ah-year-select` token Refactor 28 introduced, so the existing `app.css` rule now covers this page too. |
+| `resources/views/academic-head/risk-scoring.blade.php:14` | the `period` `<select>` gains one new token, `ah-period-select`. |
+| `public/css/app.css` (immediately after the `.ah-year-select` rule) | new scoped rule — `width: auto`, `min-width: 6.5rem`, `flex: 0 0 auto`. |
+
+Why the period select needed a rule as well: once the year select stopped shrinking (144px), the period
+select was left at its bare content width (91px). Chrome sizes a `<select>` to its text *without* the
+chevron gutter, so the arrow landed on the final "m" of "Midterm" — a fresh clip on the neighbouring
+control. The `6.5rem` (104px) floor restores the 101.5px that label had before and keeps it clear of the
+arrow.
+
+No `name`, `onchange`, `aria-label`, option loop or selected-state logic is touched; `$schoolYear`,
+`availableSchoolYears()` and every controller/route/model remain byte-identical.
+
+### 3. Verification
+
+Laid the real `@section('page_actions')` block — extracted from the blade and compiled through Laravel's
+own `Blade::compileString()` — over the real `bootstrap.min.css` + `app.css` + `theme.css` in headless
+Chrome at 1366px (250px sidebar), with a probe measuring each select against the glyph width it needs:
+
+| Case | selectWidth | text width | text area | fits | painted |
+|------|------------:|-----------:|----------:|------|---------|
+| Before — school year | 101.5px | 77.1px | 67.5px | **false** | `2024-202` |
+| After — school year | 144.0px | 77.1px | 90.0px | **true** | `2024-2025` |
+| Before — period | 101.5px | 56.7px | 67.5px | true | `Midterm` |
+| After — period | 104.0px | 56.7px | 70.0px | true | `Midterm` |
+
+The title row stays a single line (band height 76.4px before and after — nothing wrapped), and the
+screenshot shows `2024-202` clipped in the "before" strip and the full `2024-2025` clear of the chevron
+in the "after" strip. `php artisan view:clear` + `view:cache` recompiles clean, `app.css` brace counts stay
+balanced (679/679), and `node tests/JavaScript/check_inline_scripts.js` still reports 28 blocks / 0 failing.
+
+### 4. Rollback
+
+Remove the `ah-year-select` and `ah-period-select` tokens from those two `<select>` tags and delete the
+`.ah-period-select` rule (keep `.ah-year-select` — Refactor 28's Department Overview page still uses it).
+No schema/route/model/controller change is involved.

@@ -11,12 +11,12 @@
         </span>
 
         <form method="GET" action="{{ route('academic-head.riskScoring') }}" class="d-flex align-items-center gap-2">
-            <select class="form-select form-select-sm" name="period" onchange="this.form.submit()" aria-label="Grading period">
+            <select class="form-select form-select-sm ah-period-select" name="period" onchange="this.form.submit()" aria-label="Grading period">
                 @foreach($periods as $p)
                     <option value="{{ $p }}" @selected($period === $p)>{{ $p }}</option>
                 @endforeach
             </select>
-            <select class="form-select form-select-sm" name="school_year" onchange="this.form.submit()" aria-label="School year">
+            <select class="form-select form-select-sm ah-year-select" name="school_year" onchange="this.form.submit()" aria-label="School year">
                 <option value="{{ $schoolYear }}" @selected(true)>{{ $schoolYear }}</option>
             </select>
         </form>

@@ -2430,6 +2430,18 @@ footer {
     padding-right: 2.25rem;
 }
 
+/* The Risk Scoring title bar also carries "Run All Blocks" and "Refresh", so its
+   row is tighter than Department Overview's. Once the school-year select stopped
+   shrinking, the period select was left at its bare content width, where the
+   chevron sat on top of the final "m" of "Midterm". Give the period select the
+   same treatment — size to its own content with a floor wide enough to keep the
+   label clear of the arrow — so the pair never squeezes each other. */
+.container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4 .ah-period-select {
+    width: auto;
+    min-width: 6.5rem;
+    flex: 0 0 auto;
+}
+
 .container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4 .btn-outline-secondary,
 .container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4 .btn-outline-primary {
     color: var(--ocean-soft);
