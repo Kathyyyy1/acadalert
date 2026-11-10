@@ -26,16 +26,10 @@ a:not(.btn):hover {
 }
 
 .navbar {
-    /* CHANGED: Use the OCEAN darkest tone beneath the shared navbar gradient. */
+    /* CHANGED: Use the OCEAN darkest tone for the shared navbar. */
     background-color: var(--ocean-darkest);
-    background-image:
-        radial-gradient(120% 320% at 100% 0%, var(--app-navbar-corner-light) 0%, rgba(0, 0, 0, 0) 58%),
-        var(--app-navbar-bg);
-    background-repeat: no-repeat;
     color: var(--app-navbar-fg);
-    box-shadow:
-        0 1px 0 var(--app-navbar-hairline),
-        var(--app-navbar-shadow);
+    box-shadow: 0 1px 0 var(--app-navbar-hairline);
     padding: 0.5rem 1rem;
     height: 60px;
     z-index: 1050;
@@ -309,32 +303,38 @@ a:not(.btn):hover {
 }
 
 .stat-card .stat-icon {
-    font-size: 2.5rem;
+    font-size: 2rem;
     opacity: 0.4;
+    flex-shrink: 0;
+    padding-right: 0.5rem;
 }
 
 .stat-card .stat-number {
-    font-size: 2rem;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
     font-weight: 700;
+    white-space: nowrap;
+    min-width: 0;
+    color: inherit;
 }
 
 .stat-card .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     opacity: 0.8;
+    flex-shrink: 0;
 }
 
 /* CHANGED: OCEAN primary/info cards replace legacy blue/purple; semantic cards retain their risk colors. */
-.stat-card.primary { background: linear-gradient(135deg, var(--ocean-primary), var(--ocean-darkest)); }
-.stat-card.success { background: linear-gradient(135deg, #198754, #146c43); }
+.stat-card.primary { background: #1B4965; }
+.stat-card.success { background: #198754; }
 .stat-card.warning {
-    background: linear-gradient(135deg, #f5d76e, #e7b938);
+    background: #f6c23e;
     color: #30280c;
 }
 .stat-card.warning .stat-icon { opacity: 0.36; }
 .stat-card.warning .stat-label { opacity: 1; }
-.stat-card.danger { background: linear-gradient(135deg, #e74a3b, #be2617); }
-.stat-card.info { background: linear-gradient(135deg, var(--ocean-accent), var(--ocean-primary)); }
-.stat-card.purple { background: linear-gradient(135deg, var(--ocean-primary), var(--ocean-darkest)); }
+.stat-card.danger { background: #dc3545; }
+.stat-card.info { background: #29ADB2; }
+.stat-card.purple { background: #1B4965; }
 .stat-card.primary .stat-label,
 .stat-card.info .stat-label,
 .stat-card.purple .stat-label { opacity: 1; }
@@ -576,22 +576,85 @@ a:not(.btn):hover {
     font-size: 0.8rem;
 }
 
+/* --- Pagination --- */
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    font-size: 0.875rem;
+}
+
+.pagination .page-item {
+    flex-shrink: 0;
+    margin: 0;
+}
+
 .pagination .page-link {
-    border: none;
-    border-radius: 8px;
-    margin: 0 2px;
-    color: var(--ocean-primary);
-    font-weight: 500;
+    border: 1px solid var(--ocean-soft);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: var(--ocean-soft);
+    background: transparent;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    transition: all 0.15s ease;
+    white-space: nowrap;
 }
 
 .pagination .page-link:hover {
+    border-color: var(--ocean-primary);
+    color: var(--ocean-primary);
     background: var(--app-hover-bg);
-    color: var(--ocean-accent);
 }
 
 .pagination .page-item.active .page-link {
-    background: var(--ocean-primary);
-    color: #fff;
+    border-color: var(--ocean-accent);
+    background: var(--ocean-darkest);
+    color: var(--ocean-lightest);
+}
+
+.pagination .page-item.disabled .page-link {
+    border-color: var(--ocean-soft);
+    color: var(--ocean-faint);
+    background: transparent;
+    pointer-events: none;
+}
+
+/* Pagination "..." - plain text, no box */
+.pagination .page-item:not(.page-link):first-child:not(.page-link):last-child {
+    color: var(--ocean-soft);
+    font-size: 0.875rem;
+    padding: 0;
+    white-space: nowrap;
+}
+
+/* Laravel pagination "Previous/Next" links when rendered */
+.pagination .page-link.prev,
+.pagination .page-link.next {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+/* Equal button size, consistent gap, vertically centered */
+/* Layout: "Showing 21 to 40 of 1596 results" on the left, pagination on the right */
+.pagination .form-label,
+.pagination .small.text-muted {
+    flex-shrink: 0;
+    color: var(--ocean-soft);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+/* Optional: inline "Showing X to Y of Z results" when used with pagination */
+.pagination + .d-flex {
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 footer {
@@ -600,14 +663,7 @@ footer {
     border-top: 1px solid var(--app-border);
 }
 
-@media (min-width: 993px) {
-    #app {
-        background-image: linear-gradient(var(--app-sidebar-end), var(--app-sidebar-end));
-        background-repeat: no-repeat;
-        background-position: left top;
-        background-size: 250px 100%;
-    }
-}
+
 
 
 .progress-bar-animated {
@@ -935,7 +991,7 @@ footer {
     padding: 1.05rem 1.35rem;
     border-bottom: 0;
     /* CHANGED: Use the shared OCEAN chrome for dialog title bands. */
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
 }
 
 #scoringModal .modal-header::after {
@@ -945,7 +1001,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -982,17 +1038,8 @@ footer {
     border-radius: 16px;
     text-align: center;
     color: #eef2fb;
-    background-image:
-        radial-gradient(115% 85% at 14% 0%, rgba(var(--ocean-accent-rgb), 0.22) 0%, rgba(var(--ocean-accent-rgb), 0) 58%),
-        linear-gradient(168deg, rgba(13, 27, 42, 0.8) 0%, rgba(27, 73, 101, 0.88) 58%, rgba(13, 27, 42, 0.93) 100%),
-        url('../images/backgrounds/bg_smll_udd.jpg');
-    background-origin: border-box;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow:
-        0 20px 45px -22px rgba(2, 6, 23, 0.85),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    background: var(--ocean-darkest);
+    box-shadow: 0 1px 3px rgba(2, 6, 23, 0.25);
 }
 
 #scoringModal .scoring-spinner {
@@ -1038,11 +1085,7 @@ footer {
     letter-spacing: 0.02em;
     text-shadow: 0 1px 2px rgba(2, 6, 23, 0.5);
     transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    background-image:
-        linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent),
-        linear-gradient(115deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 26%, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, 0.24) 80%, rgba(255, 255, 255, 0.3) 100%);
-    background-size: 1rem 1rem, 3.25rem 100%;
-    background-repeat: repeat, repeat-x;
+    background-color: #29ADB2;
     box-shadow: 0 1px 3px rgba(2, 6, 23, 0.35);
 }
 
@@ -1082,21 +1125,14 @@ footer {
     z-index: -1;
     pointer-events: none;
     background-color: var(--bs-body-bg);
-    background-image:
-        radial-gradient(120% 110% at 100% 0%, var(--app-escalation-wash) 0%, rgba(0, 0, 0, 0) 60%),
-        linear-gradient(180deg, var(--app-escalation-veil-top) 0%, var(--app-escalation-veil-bottom) 100%),
-        url('../images/backgrounds/bg_smll_udd.jpg');
-    background-origin: border-box;
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-position: center center, center center, center 35%;
-    background-size: cover, cover, cover;
+    background: var(--ocean-darkest);
 }
 
 #escalationModal .modal-header {
     position: relative;
     padding: 1.05rem 1.35rem;
     border-bottom: 0;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
 }
 
 #escalationModal .modal-header::after {
@@ -1106,7 +1142,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, rgba(248, 113, 113, 0.34), rgba(248, 113, 113, 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -1384,14 +1420,7 @@ footer {
     z-index: -1;
     pointer-events: none;
     background-color: var(--bs-body-bg);
-    background-image:
-        radial-gradient(120% 110% at 100% 0%, var(--app-reset-wash) 0%, rgba(0, 0, 0, 0) 60%),
-        linear-gradient(180deg, var(--app-reset-veil-top) 0%, var(--app-reset-veil-bottom) 100%),
-        url('../images/backgrounds/bg_smll_udd.jpg');
-    background-origin: border-box;
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-position: center center, center center, center 35%;
-    background-size: cover, cover, cover;
+    background: var(--ocean-darkest);
 }
 
 #resetEscalationModal .modal-header {
@@ -1401,7 +1430,7 @@ footer {
     /* .text-dark is !important, so the header's ink is overridden here with the
        same weight; on the navy band the utility alone would be unreadable. */
     color: #f1f5ff !important;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
 }
 
 #resetEscalationModal .modal-header::after {
@@ -1411,7 +1440,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, rgba(246, 194, 62, 0.32), rgba(246, 194, 62, 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -1591,9 +1620,8 @@ footer {
     gap: 0.7rem;
     padding: 0.8rem 1.25rem;
     border-bottom: 0;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
-    /* The corner light below deliberately overhangs the band, so the band must
-       clip it - otherwise it spills past the card's rounded top corners. */
+    background-color: #1B4965;
+    /* The band clips any overhang so it does not spill past rounded corners. */
     overflow: hidden;
 }
 
@@ -1604,7 +1632,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -1674,7 +1702,7 @@ footer {
     padding: 0.3rem 0.7rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 999px;
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(224, 233, 255, 0.92) 100%);
+    background-color: #E6F4F1;
     color: #0d2050 !important;
     font-size: 0.68rem;
     font-weight: 700;
@@ -1808,25 +1836,9 @@ footer {
     padding: 2px;
     border-radius: 24px;
     margin-bottom: 1.5rem;
-    /* CHANGED: Replace the blue recommendation halo with OCEAN accent tones. */
+    /* CHANGED: Flat OCEAN accent border replaces the animated sweep. */
     background-color: var(--ocean-accent);
-    background-image: conic-gradient(from var(--recs-sweep),
-            var(--ocean-darkest) 0deg,
-            var(--ocean-primary) 38deg,
-            var(--ocean-accent) 58deg,
-            var(--ocean-lightest) 66deg,
-            var(--ocean-soft) 78deg,
-            var(--ocean-primary) 118deg,
-            var(--ocean-darkest) 168deg,
-            var(--ocean-soft) 196deg,
-            var(--ocean-lightest) 204deg,
-            var(--ocean-accent) 216deg,
-            var(--ocean-darkest) 258deg,
-            var(--ocean-primary) 300deg,
-            var(--ocean-accent) 338deg,
-            var(--ocean-darkest) 360deg);
-    animation: recsSweep 9s linear infinite;
-    box-shadow: 0 30px 70px -38px rgba(2, 6, 23, 0.85);
+    box-shadow: 0 1px 0 rgba(2, 6, 23, 0.2);
 }
 
 #recsHero::before {
@@ -1835,27 +1847,10 @@ footer {
     inset: -2px;
     z-index: 0;
     border-radius: 26px;
-    opacity: 0.55;
-    background-image: conic-gradient(from var(--recs-sweep),
-            var(--ocean-darkest) 0deg,
-            var(--ocean-primary) 38deg,
-            var(--ocean-accent) 58deg,
-            var(--ocean-lightest) 66deg,
-            var(--ocean-soft) 78deg,
-            var(--ocean-primary) 118deg,
-            var(--ocean-darkest) 168deg,
-            var(--ocean-soft) 196deg,
-            var(--ocean-lightest) 204deg,
-            var(--ocean-accent) 216deg,
-            var(--ocean-darkest) 258deg,
-            var(--ocean-primary) 300deg,
-            var(--ocean-accent) 338deg,
-            var(--ocean-darkest) 360deg);
-    filter: blur(18px) saturate(150%);
+    background: none;
+    filter: none;
+    opacity: 0;
     pointer-events: none;
-    animation:
-        recsSweep 9s linear infinite,
-        recsHeroHalo 6.5s ease-in-out infinite;
 }
 
 #recsHero .recs-hero-body {
@@ -1866,14 +1861,6 @@ footer {
     padding: clamp(1.5rem, 2.4vw, 2.35rem);
     /* The colour is only a backstop for a photo that fails to load. */
     background-color: var(--ocean-darkest);
-    background-image:
-        radial-gradient(120% 120% at 8% 0%, rgba(var(--ocean-accent-rgb), 0.26) 0%, rgba(var(--ocean-accent-rgb), 0) 58%),
-        linear-gradient(168deg, rgba(13, 27, 42, 0.87) 0%, rgba(27, 73, 101, 0.9) 52%, rgba(13, 27, 42, 0.94) 100%),
-        url('../images/backgrounds/maincampus03.webp');
-    background-position: center center, center center, center 42%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 #recsHero .recs-hero-eyebrow {
@@ -1884,7 +1871,7 @@ footer {
     padding: 0.32rem 0.85rem 0.32rem 0.6rem;
     border: 1px solid rgba(var(--ocean-soft-rgb), 0.35);
     border-radius: 999px;
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.04) 100%);
+    background-color: rgba(255, 255, 255, 0.06);
     color: var(--ocean-soft);
     font-size: 0.68rem;
     font-weight: 700;
@@ -1928,10 +1915,10 @@ footer {
 
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {
     #recsHero .recs-hero-title {
-        background-image: linear-gradient(100deg, var(--ocean-lightest) 0%, var(--ocean-soft) 46%, var(--ocean-accent) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        background-image: none;
+        -webkit-background-clip: initial;
+        background-clip: initial;
+        -webkit-text-fill-color: #29ADB2;
     }
 }
 
@@ -1958,7 +1945,7 @@ footer {
     padding: 1.15rem 1.2rem 1.25rem;
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 16px;
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.035) 100%);
+    background-color: rgba(13, 27, 42, 0.45);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transition: border-color 0.25s ease, transform 0.25s ease;
 }
@@ -1988,7 +1975,7 @@ footer {
     height: 34px;
     border: 1px solid rgba(var(--ocean-soft-rgb), 0.32);
     border-radius: 10px;
-    background-image: linear-gradient(180deg, rgba(var(--ocean-soft-rgb), 0.3) 0%, rgba(var(--ocean-primary-rgb), 0.32) 100%);
+    background-color: rgba(41, 173, 178, 0.25);
     color: var(--ocean-lightest);
     font-size: 0.95rem;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
@@ -2057,8 +2044,8 @@ footer {
     gap: 0.7rem;
     padding: 0.85rem 1.25rem;
     border-bottom: 0;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
-    /* The corner light deliberately overhangs, so the band must clip it. */
+    background-color: #1B4965;
+    /* The band clips any overhang so it does not spill past rounded corners. */
     overflow: hidden;
 }
 
@@ -2069,12 +2056,12 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
 .recs-band-success::after {
-    background: radial-gradient(closest-side, rgba(52, 211, 153, 0.34), rgba(52, 211, 153, 0));
+    background: none;
 }
 
 .recs-band > * {
@@ -2181,9 +2168,8 @@ footer {
     gap: 0.7rem;
     padding: 0.85rem 1.25rem;
     border-bottom: 0;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
-    /* The corner light below deliberately overhangs the band, so the band clips
-       it - otherwise it spills past the card's rounded top corners. */
+    background-color: #1B4965;
+    /* The band clips any overhang so it does not spill past rounded corners. */
     overflow: hidden;
     /* The heading is a bare text node inside the band, so it takes the band's type
        rather than a class of its own. */
@@ -2198,7 +2184,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -2214,7 +2200,7 @@ footer {
     padding: 0.3rem 0.7rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 999px;
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(224, 233, 255, 0.92) 100%);
+    background-color: #E6F4F1;
     color: #0d2050 !important;
     font-size: 0.68rem;
     font-weight: 700;
@@ -2254,12 +2240,11 @@ footer {
 }
 
 #progressContainer .progress .progress-bar:not(.progress-bar-striped) {
-    background-image: linear-gradient(115deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 26%, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, 0.24) 80%, rgba(255, 255, 255, 0.3) 100%);
-    background-size: 3.25rem 100%;
+    background-color: #29ADB2;
 }
 
 #progressContainer .card-body .bg-light {
-    background-image: linear-gradient(180deg, rgba(var(--bs-body-color-rgb), 0.07) 0%, rgba(var(--bs-body-color-rgb), 0.03) 100%);
+    background-color: rgba(var(--bs-body-color-rgb), 0.05);
     border-radius: 12px !important;
     box-shadow: inset 0 0 0 1px rgba(var(--bs-body-color-rgb), 0.09);
 }
@@ -2348,13 +2333,7 @@ footer {
     pointer-events: none;
     border-radius: 20px;
     background-color: var(--app-ah-veil-bottom);
-    background-image:
-        radial-gradient(120% 110% at 100% 0%, var(--app-ah-wash) 0%, rgba(0, 0, 0, 0) 60%),
-        linear-gradient(180deg, var(--app-ah-veil-top) 0%, var(--app-ah-veil-bottom) 100%),
-        var(--ah-photo, none);
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-position: center center, center center, center 30%;
-    background-size: cover, cover, cover;
+    background: var(--ocean-darkest);
     box-shadow:
         inset 0 0 0 1px var(--app-border-subtle),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -2366,8 +2345,8 @@ footer {
     padding: 1.05rem 1.4rem;
     margin-bottom: 1rem !important;
     border-radius: 18px;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
-    box-shadow: 0 24px 54px -36px rgba(2, 6, 23, 0.9);
+    background-color: #1B4965;
+    box-shadow: 0 1px 0 rgba(2, 6, 23, 0.2);
 }
 
 .container-fluid:has(> .ah-page) > .d-flex.mt-3.mb-4::after {
@@ -2377,7 +2356,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -2537,7 +2516,7 @@ footer {
     overflow: hidden;
     padding: 0.85rem 1.25rem;
     border-bottom: 0;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
     color: #eaf1ff;
     letter-spacing: 0.005em;
 }
@@ -2549,7 +2528,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -2634,7 +2613,7 @@ footer {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(120% 120% at 100% 0%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 56%);
+    background: none;
 }
 
 @keyframes ahReveal {
@@ -2818,10 +2797,7 @@ footer {
     left: 0;
     right: 0;
     height: 3px;
-    background-image: linear-gradient(90deg,
-        rgba(var(--ocean-accent-rgb), 0.95) 0%,
-        rgba(var(--ocean-accent-rgb), 0.28) 42%,
-        rgba(var(--ocean-accent-rgb), 0) 82%);
+    background-color: rgba(var(--ocean-accent-rgb), 0.65);
     pointer-events: none;
 }
 
@@ -3041,10 +3017,7 @@ footer {
     left: 0;
     right: 0;
     height: 3px;
-    background-image: linear-gradient(90deg,
-        var(--gc-rail, rgba(var(--ocean-accent-rgb), 0.95)) 0%,
-        var(--gc-rail, rgba(var(--ocean-accent-rgb), 0.95)) 30%,
-        rgba(0, 0, 0, 0) 100%);
+    background-color: var(--gc-rail, rgba(var(--ocean-accent-rgb), 0.95));
     pointer-events: none;
 }
 
@@ -3054,7 +3027,7 @@ footer {
 .gc-page .ah-glow.border-info > .card-header::after,
 .gc-page .ah-glow.border-primary > .card-header::after,
 .gc-page .ah-glow.border-secondary > .card-header::after {
-    background: radial-gradient(closest-side, var(--gc-light), rgba(0, 0, 0, 0));
+    background: none;
 }
 
 
@@ -3291,7 +3264,7 @@ footer {
     left: 0.6rem;
     width: 3px;
     border-radius: 999px;
-    background-image: linear-gradient(180deg, var(--app-ah-glow-core) 0%, rgba(var(--ocean-accent-rgb), 0.10) 100%);
+    background-color: var(--app-ah-glow-core);
     pointer-events: none;
 }
 
@@ -3350,10 +3323,7 @@ footer {
     left: 0;
     right: 0;
     height: 3px;
-    background-image: linear-gradient(90deg,
-        rgba(var(--ocean-accent-rgb), 0.95) 0%,
-        rgba(var(--ocean-accent-rgb), 0.28) 42%,
-        rgba(var(--ocean-accent-rgb), 0) 82%);
+    background-color: rgba(var(--ocean-accent-rgb), 0.65);
     pointer-events: none;
 }
 
@@ -3569,7 +3539,7 @@ footer {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(120% 120% at 100% 0%, var(--app-accent-glow-soft) 0%, rgba(var(--ocean-accent-rgb), 0) 56%);
+    background: none;
 }
 
 .admin-page .chart-container.admin-trend-stage {
@@ -3578,9 +3548,7 @@ footer {
     padding: 0.85rem 1rem 0.4rem;
     border: 1px solid var(--app-border-subtle);
     border-radius: 14px;
-    background:
-        radial-gradient(125% 135% at 0% 0%, rgba(41, 173, 178, 0.12) 0%, rgba(0, 0, 0, 0) 58%),
-        rgba(var(--bs-body-color-rgb), 0.03);
+    background-color: rgba(var(--bs-body-color-rgb), 0.03);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.06),
         inset 0 22px 38px -32px rgba(2, 6, 23, 0.95);
@@ -3824,13 +3792,7 @@ footer {
     z-index: -1;
     pointer-events: none;
     background-color: var(--bs-body-bg);
-    background-image:
-        radial-gradient(120% 110% at 100% 0%, var(--app-ah-wash) 0%, rgba(0, 0, 0, 0) 60%),
-        linear-gradient(180deg, var(--app-ah-veil-top) 0%, var(--app-ah-veil-bottom) 100%),
-        url('../images/backgrounds/bg_smll_udd.jpg');
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-position: center center, center center, center 30%;
-    background-size: cover, cover, cover;
+    background: var(--ocean-darkest);
 }
 
 #sessionModal .modal-header,
@@ -3843,7 +3805,7 @@ footer {
     overflow: hidden;
     padding: 0.9rem 1.25rem;
     border-bottom: 0;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
     color: #eaf1ff;
 }
 
@@ -3883,10 +3845,7 @@ footer {
     left: 0;
     right: 0;
     height: 3px;
-    background-image: linear-gradient(90deg,
-        var(--gc-dialog-rail) 0%,
-        var(--gc-dialog-rail) 30%,
-        rgba(0, 0, 0, 0) 100%);
+    background-color: var(--gc-dialog-rail);
     pointer-events: none;
 }
 
@@ -3902,7 +3861,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow-soft), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -4031,9 +3990,9 @@ footer {
     margin-bottom: 1.35rem;
     padding: 1.15rem 1.4rem;
     border-radius: 18px;
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
     color: #eaf1ff;
-    box-shadow: 0 24px 54px -36px rgba(2, 6, 23, 0.9);
+    box-shadow: 0 1px 0 rgba(2, 6, 23, 0.2);
 }
 
 .sp-welcome::after {
@@ -4043,7 +4002,7 @@ footer {
     right: -14%;
     width: 64%;
     height: 200%;
-    background: radial-gradient(closest-side, var(--app-accent-glow), rgba(var(--ocean-accent-rgb), 0));
+    background: none;
     pointer-events: none;
 }
 
@@ -4235,11 +4194,11 @@ footer {
 }
 
 .sp-page .card.ah-glow.border-danger > .card-header {
-    background-image: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 54%, #dc2626 100%);
+    background-color: #dc3545;
 }
 
 .sp-page .card.ah-glow.border-danger > .card-header::after {
-    background: radial-gradient(closest-side, rgba(248, 113, 113, 0.42), rgba(248, 113, 113, 0));
+    background: none;
 }
 
 .sp-page .card .row.text-start > [class*='col-'] + [class*='col-'] {
@@ -4260,7 +4219,7 @@ footer {
     gap: 0.5rem;
     padding: 0.7rem 0.9rem;
     border-bottom: 1px solid var(--app-border-subtle);
-    background-image: linear-gradient(135deg, var(--ocean-darkest) 0%, var(--ocean-primary) 100%);
+    background-color: #1B4965;
     color: #eaf1ff;
 }
 

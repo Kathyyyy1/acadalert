@@ -280,11 +280,7 @@ function loadRiskTrend() {
                                 if (!area) {
                                     return palette.fillMid;
                                 }
-                                const gradient = context.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
-                                gradient.addColorStop(0, palette.fillTop);
-                                gradient.addColorStop(0.62, palette.fillMid);
-                                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                                return gradient;
+                                return palette.fillTop;
                             },
                             pointStyle: 'rectRounded',
                             pointRadius: 5.5,

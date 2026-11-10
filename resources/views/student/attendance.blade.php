@@ -28,7 +28,7 @@
     $overallRate = round($attendanceSummary->overall_attendance ?? 0);
 @endphp
 
-<div class="ah-page sp-page" style="--ah-photo: url('{{ asset('images/backgrounds/maincampus03.webp') }}')">
+<div class="ah-page sp-page">
 
     <div class="sp-welcome ah-reveal" style="--ah-i: 0;">
         <span class="sp-welcome-icon"><i class="fas fa-clipboard-check"></i></span>
@@ -107,7 +107,7 @@
                 <div class="card-body">
                     @if($attendanceBreakdown->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" style="width: 100%; table-layout: auto;">
                                 <thead>
                                     <tr>
                                         <th>#</th>

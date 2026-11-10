@@ -408,7 +408,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm align-middle mb-0">
+                    <table class="table table-hover table-sm align-middle mb-0" style="width: 100%; table-layout: auto;">
                         <thead>
                             <tr>
                                 <th>Program</th>
@@ -440,7 +440,7 @@
                                     <td class="text-end">
                                         <a href="{{ route('academic-head.blocks', ['programId' => $program->id]) }}"
                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye me-1"></i> Blocks
+                                            <i class="fas fa-eye me-1"></i> View
                                         </a>
                                     </td>
                                 </tr>

@@ -54,7 +54,7 @@
     };
 @endphp
 
-<div class="ah-page" style="--ah-photo: url('{{ asset('images/backgrounds/bg_smll_udd.jpg') }}')">
+<div class="ah-page">
 
 @if($isDepartmentWide)
     {{-- Department-wide: one card group per program, so the head sees where the risk

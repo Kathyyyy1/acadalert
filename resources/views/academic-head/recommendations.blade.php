@@ -18,7 +18,7 @@
 <input type="hidden" id="activePeriod" value="{{ $period }}">
 <input type="hidden" id="activeSchoolYear" value="{{ $schoolYear }}">
 
-<div class="ah-page" style="--ah-photo: url('{{ asset('images/backgrounds/maincampus03.webp') }}')">
+<div class="ah-page">
 <div id="progressContainer" style="display: none;" class="mb-4">
     <div class="card">
         <div class="card-header bg-primary text-white">

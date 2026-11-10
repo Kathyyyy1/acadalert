@@ -40,7 +40,7 @@
 
 @section('content')
 
-<div class="ah-page gc-page" style="--ah-photo: url('{{ asset('images/backgrounds/bg_smll_udd.jpg') }}')">
+<div class="ah-page gc-page">
 <div class="card mb-4 ah-glow ah-reveal" style="--ah-i: 0;">
     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <span>

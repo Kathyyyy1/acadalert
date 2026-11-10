@@ -66,7 +66,7 @@
             --lg-lockup-shadow:
                 drop-shadow(0 0 1px rgba(255, 255, 255, 0.88))
                 drop-shadow(0 0 9px rgba(168, 218, 220, 0.55));
-            --lg-veil: linear-gradient(180deg, rgba(13, 27, 42, 0.70) 0%, rgba(13, 27, 42, 0.82) 55%, rgba(4, 7, 16, 0.90) 100%);
+            --lg-veil: rgba(13, 27, 42, 0.60);
         }
 
         :root.theme-light {
@@ -87,7 +87,7 @@
                 drop-shadow(0 8px 18px rgba(13, 27, 42, 0.20));
             --lg-lockup-shadow:
                 drop-shadow(0 3px 10px rgba(13, 27, 42, 0.18));
-            --lg-veil: linear-gradient(180deg, rgba(13, 27, 42, 0.56) 0%, rgba(13, 27, 42, 0.68) 55%, rgba(9, 14, 28, 0.80) 100%);
+            --lg-veil: rgba(255, 255, 255, 0.55);
         }
 
         body {
@@ -150,9 +150,7 @@
             z-index: 1;
             pointer-events: none;
             background-image:
-                /* CHANGED: OCEAN-tinted veil preserves legibility over every slideshow image. */
-                radial-gradient(120% 95% at 100% 0%, rgba(41, 173, 178, 0.20), rgba(41, 173, 178, 0) 62%),
-                radial-gradient(110% 90% at 0% 100%, rgba(168, 218, 220, 0.14), rgba(168, 218, 220, 0) 60%),
+                /* CHANGED: Flat semi-transparent veil keeps text legible over the slideshow photo. */
                 var(--lg-veil);
         }
 
@@ -167,22 +165,9 @@
             position: relative;
             border-radius: 26px;
             padding: 3px;
-            /* CHANGED: Animated border and halo use OCEAN colors in place of blue/cyan. */
+            /* CHANGED: Flat OCEAN border replaces the animated sweep. */
             background-color: rgba(41, 173, 178, 0.55);
-            background-image: conic-gradient(
-                from var(--login-sweep),
-                var(--lg-soft),
-                var(--lg-accent),
-                var(--lg-primary),
-                var(--lg-lightest),
-                var(--lg-darkest),
-                var(--lg-soft)
-            );
-            animation: lgSweep 3.6s linear infinite;
-            box-shadow:
-                0 0 0 1px rgba(168, 218, 220, 0.30),
-                0 26px 64px -30px rgba(2, 6, 23, 0.92),
-                0 0 34px var(--lg-glow);
+            box-shadow: 0 1px 0 rgba(168, 218, 220, 0.30);
 
             transition: padding 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
         }
@@ -193,18 +178,9 @@
             inset: -12px;
             z-index: -1;
             border-radius: 38px;
-            background-image: conic-gradient(
-                from var(--login-sweep),
-                var(--lg-soft),
-                var(--lg-accent),
-                var(--lg-primary),
-                var(--lg-lightest),
-                var(--lg-darkest),
-                var(--lg-soft)
-            );
-            filter: blur(20px) saturate(1.5);
-            opacity: 0.55;
-            animation: lgHalo 5.6s ease-in-out infinite;
+            background: none;
+            filter: none;
+            opacity: 0;
             transition: inset 0.35s ease, opacity 0.35s ease;
             pointer-events: none;
         }
@@ -222,11 +198,7 @@
         .login-border-wrapper:focus-within {
             padding: 5px;
             filter: brightness(1.18) saturate(1.28);
-            box-shadow:
-                0 0 0 1px rgba(168, 218, 220, 0.60),
-                0 26px 64px -28px rgba(2, 6, 23, 0.92),
-                0 0 62px var(--lg-glow),
-                0 0 120px rgba(41, 173, 178, 0.26);
+            box-shadow: 0 1px 0 rgba(168, 218, 220, 0.60);
         }
 
         .login-border-wrapper:hover::before,
@@ -287,11 +259,7 @@
             align-self: stretch;
             width: 1px;
             margin: 6px 0;
-            background: linear-gradient(180deg,
-                transparent,
-                var(--lg-card-edge) 22%,
-                var(--lg-card-edge) 78%,
-                transparent);
+            background: var(--lg-card-edge);
         }
 
         .login-brand-chip {
@@ -372,11 +340,9 @@
             font-weight: 600;
             letter-spacing: 0.03em;
             color: #ffffff;
-            /* CHANGED: Keep white button text high-contrast on the darker OCEAN gradient. */
-            background-image: linear-gradient(135deg, var(--lg-primary) 0%, var(--lg-darkest) 100%);
-            box-shadow:
-                0 14px 30px -16px rgba(41, 173, 178, 0.62),
-                inset 0 1px 0 rgba(255, 255, 255, 0.22);
+            /* CHANGED: Flat OCEAN button color keeps text high-contrast. */
+            background-color: #1B4965;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
             transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
         }
 
@@ -384,10 +350,7 @@
         .btn-login:focus-visible {
             transform: translateY(-2px);
             filter: brightness(1.08);
-            box-shadow:
-                0 20px 40px -18px rgba(41, 173, 178, 0.78),
-                0 0 34px rgba(41, 173, 178, 0.45),
-                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
         }
 
         .btn-login:active {
@@ -462,7 +425,7 @@
             width: 18px;
             height: auto;
             opacity: 0.9;
-            filter: drop-shadow(0 0 6px rgba(41, 173, 178, 0.55));
+            filter: none;
         }
 
 

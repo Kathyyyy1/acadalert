@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-<div class="ah-page admin-page" style="--ah-photo: url('{{ asset('images/backgrounds/maincampus03.webp') }}')">
+<div class="ah-page admin-page">
 
 <div class="row">
     <div class="col-12 mb-4">

@@ -36,7 +36,7 @@
         : ($average < 75 ? 'text-danger' : ($average < 80 ? 'text-warning' : 'text-success'));
 @endphp
 
-<div class="ah-page sp-page" style="--ah-photo: url('{{ asset('images/backgrounds/bg_smll_udd.jpg') }}')">
+<div class="ah-page sp-page">
 
     <div class="sp-welcome ah-reveal" style="--ah-i: 0;">
         <span class="sp-welcome-icon"><i class="fas fa-book"></i></span>

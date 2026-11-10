@@ -184,7 +184,10 @@ function loadSubjectGrades() {
                             }
                         },
                         y: {
-                            grid: { display: false }
+                            grid: { display: false },
+                            ticks: {
+                                padding: 10
+                            }
                         }
                     }
                 }
