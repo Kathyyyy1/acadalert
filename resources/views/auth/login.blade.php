@@ -35,12 +35,6 @@
             box-sizing: border-box;
         }
 
-        @property --login-sweep {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-
         :root {
             color-scheme: dark;
             /* CHANGED: Define the approved OCEAN swatches for the standalone login view. */
@@ -66,7 +60,9 @@
             --lg-lockup-shadow:
                 drop-shadow(0 0 1px rgba(255, 255, 255, 0.88))
                 drop-shadow(0 0 9px rgba(168, 218, 220, 0.55));
-            --lg-veil: rgba(13, 27, 42, 0.60);
+            /* CHANGED: Static veil swatches (soft center, strong edges) for the single background photo. */
+            --lg-veil-soft: rgba(13, 27, 42, 0.45);
+            --lg-veil-strong: rgba(13, 27, 42, 0.84);
         }
 
         :root.theme-light {
@@ -87,7 +83,9 @@
                 drop-shadow(0 8px 18px rgba(13, 27, 42, 0.20));
             --lg-lockup-shadow:
                 drop-shadow(0 3px 10px rgba(13, 27, 42, 0.18));
-            --lg-veil: rgba(255, 255, 255, 0.55);
+            /* CHANGED: Light-theme veil keeps the static photo readable without going fully dark. */
+            --lg-veil-soft: rgba(255, 255, 255, 0.45);
+            --lg-veil-strong: rgba(255, 255, 255, 0.84);
         }
 
         body {
@@ -102,12 +100,17 @@
             position: relative;
             overflow-x: hidden;
             color: var(--lg-ink);
-            background-image: url('{{ asset("images/backgrounds/maincampus03.webp") }}');
+            /* CHANGED: Static campus photo acts as the base/fallback layer behind the slow crossfade. */
+            background-color: var(--lg-darkest);
+            background-image: url('{{ asset("images/backgrounds/maincampus02.webp") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
         }
         
+        /* CHANGED: Slow, drift-free crossfade. Only opacity animates - no zoom or pan,
+           so the background stays visually static in terms of movement (non-dizzying). */
         .login-bg {
             position: fixed;
             inset: 0;
@@ -118,40 +121,54 @@
 
         .login-bg-slide {
             position: absolute;
-            inset: -2%;
+            inset: 0;
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
             opacity: 0;
-            will-change: opacity, transform;
-            animation: lgSlide 32s linear infinite, lgDrift 46s ease-in-out infinite alternate;
+            will-change: opacity;
+            /* 48s loop (4 slides x 12s). Each slide: 2s fade / 10s hold / 2s fade. */
+            animation: lgCrossfade 48s linear infinite;
         }
 
-        .login-bg-slide:nth-child(1) { background-image: url('{{ asset("images/backgrounds/maincampus03.webp") }}'); animation-delay: 0s, 0s; }
-        .login-bg-slide:nth-child(2) { background-image: url('{{ asset("images/backgrounds/maincampus02.webp") }}'); animation-delay: 8s, -6s; }
-        .login-bg-slide:nth-child(3) { background-image: url('{{ asset("images/backgrounds/bg_smll_udd.jpg") }}'); animation-delay: 16s, -12s; }
-        .login-bg-slide:nth-child(4) { background-image: url('{{ asset("images/backgrounds/loginbackground.jpg") }}'); animation-delay: 24s, -18s; }
+        /* CHANGED: Positive delays so a fresh reload always begins on slide 1.
+           Slides 2-4 stay hidden (opacity: 0) until their turn, so nothing flashes. */
+        .login-bg-slide:nth-child(1) { background-image: url('{{ asset("images/backgrounds/maincampus02.webp") }}'); animation-name: lgCrossfadeFirst; animation-delay: 0s; }
+        .login-bg-slide:nth-child(2) { background-image: url('{{ asset("images/backgrounds/maincampus03.webp") }}'); animation-delay: 10s; }
+        .login-bg-slide:nth-child(3) { background-image: url('{{ asset("images/backgrounds/bg_smll_udd.jpg") }}'); animation-delay: 22s; }
+        .login-bg-slide:nth-child(4) { background-image: url('{{ asset("images/backgrounds/loginbackground.jpg") }}'); animation-delay: 34s; }
 
-        @keyframes lgSlide {
-            0%    { opacity: 0; }
-            3.1%  { opacity: 1; }
-            25%   { opacity: 1; }
-            28.1% { opacity: 0; }
-            100%  { opacity: 0; }
+        /* Slide 1: fully visible the instant the page loads, holds ~10s, crossfades out,
+           then crossfades back in at the loop seam. Opacity only - no zoom/pan. */
+        @keyframes lgCrossfadeFirst {
+            0%       { opacity: 1; }
+            20.8333% { opacity: 1; }
+            25%      { opacity: 0; }
+            95.8333% { opacity: 0; }
+            100%     { opacity: 1; }
         }
 
-        @keyframes lgDrift {
-            from { transform: scale(1.03); }
-            to   { transform: scale(1.11) translate3d(-1.2%, -1%, 0); }
+        /* Slides 2-4: fade in, hold ~10s, fade out. Opacity only - no transform (lgDrift removed). */
+        @keyframes lgCrossfade {
+            0%       { opacity: 0; }
+            4.1667%  { opacity: 1; }
+            25%      { opacity: 1; }
+            29.1667% { opacity: 0; }
+            100%     { opacity: 0; }
         }
 
+        /* CHANGED: Static dark veil keeps text legible over the slowly crossfading photos. */
         .login-veil {
             position: fixed;
             inset: 0;
             z-index: 1;
             pointer-events: none;
-            background-image:
-                /* CHANGED: Flat semi-transparent veil keeps text legible over the slideshow photo. */
-                var(--lg-veil);
+            background-image: radial-gradient(
+                125% 125% at 50% 40%,
+                var(--lg-veil-soft) 0%,
+                var(--lg-veil-strong) 70%,
+                var(--lg-veil-strong) 100%
+            );
         }
 
         .login-container {
@@ -183,15 +200,6 @@
             opacity: 0;
             transition: inset 0.35s ease, opacity 0.35s ease;
             pointer-events: none;
-        }
-
-        @keyframes lgSweep {
-            to { --login-sweep: 360deg; }
-        }
-
-        @keyframes lgHalo {
-            0%, 100% { opacity: 0.45; }
-            50%      { opacity: 0.72; }
         }
 
         .login-border-wrapper:hover,
@@ -459,24 +467,15 @@
             }
         }
 
+        /* CHANGED: Reduced-motion users see one static photo with no crossfade. */
         @media (prefers-reduced-motion: reduce) {
             .login-bg-slide {
                 animation: none;
                 opacity: 0;
-                transform: none;
             }
 
             .login-bg-slide:nth-child(1) {
                 opacity: 1;
-            }
-
-            .login-border-wrapper,
-            .login-border-wrapper::before {
-                animation: none;
-            }
-
-            .login-border-wrapper::before {
-                opacity: 0.55;
             }
 
             .login-border-wrapper:hover,

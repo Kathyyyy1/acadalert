@@ -267,6 +267,15 @@ a:not(.btn):hover {
     background: rgba(0,0,0,0.2);
 }
 
+/* CHANGED: The sidebar background is always dark, so pin the "v1.0.0" version label
+   (and its icon) to a fixed light color. This overrides Bootstrap's `.text-muted`
+   !important rule, whose --bs-secondary-color turns dark in Light Theme and made the
+   label invisible. Visible on the dark sidebar in both Dark and Light themes. */
+#sidebar-wrapper .sidebar-footer,
+#sidebar-wrapper .sidebar-footer i {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
 #page-content-wrapper {
     margin-top: 60px;
     min-height: calc(100vh - 60px);
@@ -4111,6 +4120,35 @@ footer {
 
 .sp-rate .display-6 {
     line-height: 1;
+}
+
+/* CHANGED: The Attendance Summary card is `h-100`, so on wide screens it stretches to
+   match the taller Grades Summary card. Making the card body a flex column lets the
+   per-subject breakdown absorb the leftover height, and the table rows spread to fill
+   it - so the card reads as full instead of leaving a void under the metrics.
+   `min-height: 0` keeps the region able to scroll when the rows genuinely overflow. */
+.sp-page .sp-attendance-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.sp-page .sp-attendance-list > .table {
+    height: 100%;
+}
+
+/* CHANGED: Same treatment for the Grades Summary card so both cards fill their
+   columns. The per-subject grades table absorbs the leftover height and its rows
+   spread to fill it, removing the gap under the chart. The chart keeps its fixed
+   stage (Chart.js needs one) and is protected from flex-shrink by .flex-shrink-0. */
+.sp-page .sp-grades-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.sp-page .sp-grades-list > .table {
+    height: 100%;
 }
 
 .sp-page .list-group {

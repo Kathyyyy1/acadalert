@@ -171,10 +171,7 @@
                     </div>
                 @endif
 
-                <div class="small text-muted mt-2">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Score is calculated from grades (60%) and attendance (40%).
-                </div>
+                
             </div>
         </div>
     </div>
@@ -189,7 +186,7 @@
                 <a href="{{ route('student.grades', ['period' => $currentPeriod]) }}"
                    class="btn btn-sm btn-outline-primary float-end">Full grades</a>
             </div>
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
                 <div class="row text-center mb-3 sp-metrics">
                     <div class="col-4">
                         <div class="text-muted small text-uppercase">Average</div>
@@ -218,11 +215,11 @@
                 @endif
 
                 {{-- CHANGED: Keep the grade chart sizing consistent across breakpoints. --}}
-                <div class="chart-container">
+                <div class="chart-container flex-shrink-0">
                     <canvas id="subjectGradesChart"></canvas>
                 </div>
 
-                <div class="table-responsive mt-3" style="max-height: 260px; overflow-y: auto;">
+                <div class="table-responsive mt-3 sp-grades-list">
                     <table class="table table-sm mb-0">
                         <thead>
                             <tr>
@@ -274,7 +271,7 @@
                 <a href="{{ route('student.attendance', ['period' => $currentPeriod]) }}"
                    class="btn btn-sm btn-outline-primary float-end">Full attendance</a>
             </div>
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
                 @php
                     $attendanceRate = (float) ($attendanceSummary->overall_attendance ?? 0);
                 @endphp
@@ -314,7 +311,7 @@
                 @endif
 
                 @if($attendanceBreakdown->count() > 0)
-                    <div class="table-responsive mt-3" style="max-height: 200px; overflow-y: auto;">
+                    <div class="table-responsive mt-3 sp-attendance-list">
                         <table class="table table-sm mb-0">
                             <thead>
                                 <tr>
